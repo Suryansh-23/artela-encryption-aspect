@@ -20,15 +20,15 @@ contract Encryption {
         }
     }
 
-    function encrypt(address aspectId, string memory message, string memory key) public returns (string memory encryptedMessage) {
+    function encrypt(address aspectId, string memory /* message */, string memory /* key */) public returns (string memory encryptedMessage) {
         bytes memory contextKey = abi.encodePacked(aspectId, "ToContract");
         (bool success, bytes memory returnData) = address(0x64).call(contextKey);
-        return string(returnData);
+        return success ? string(returnData) : "Error";
     }
 
-    function decrypt(address aspectId, string memory message, string memory key) public returns (string memory decryptedMessage) {
+    function decrypt(address aspectId, string memory /* message */, string memory /* key */) public returns (string memory decryptedMessage) {
         bytes memory contextKey = abi.encodePacked(aspectId, "ToContract");
         (bool success, bytes memory returnData) = address(0x64).call(contextKey);
-        return string(returnData);
+        return success ? string(returnData) : "Error";
     }
 }

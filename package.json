@@ -12,7 +12,7 @@
     "asbuild:release": "asc aspect/index.ts --target release",
     "operation:call": "node scripts/operation.cjs --isCall true",
     "operation:send": "node scripts/operation.cjs --isCall false",
-    "bound:aspect": "node scripts/get-bound-aspect.cjs",
+    "bound:aspect": "node scripts/get-bound-aspect.cjs --skfile ./build/privateKey.txt",
     "bound:account": "node scripts/get-bound-account.cjs",
     "contract:bind": "node scripts/bind.cjs --skfile ./build/privateKey.txt",
     "contract:unbind": "node scripts/unbind.cjs --skfile ./build/privateKey.txt",
