@@ -48,58 +48,67 @@ export default function Component() {
     });
   };
   function validateHexMessage(message: string) {
-    const result = hexMessageSchema.safeParse({ message: message, msgSwitch: true });
+    const result = hexMessageSchema.safeParse({
+      message: message,
+      msgSwitch: true,
+    });
     if (!result.success) {
-        // Handle validation error
-        setFormError(result.error.issues[0].message);
+      // Handle validation error
+      setFormError(result.error.issues[0].message);
     } else {
-        // Remove error message if validation is successful
-        setFormError("");
-        // Remove '0x' from the beginning of the hex code
-        if (message.startsWith('0x')) {
-            setMessage(message.replace('0x', ''));
-        }
+      // Remove error message if validation is successful
+      setFormError("");
+      // Remove '0x' from the beginning of the hex code
+      if (message.startsWith("0x")) {
+        setMessage(message.replace("0x", ""));
+      }
     }
-}
+  }
 
-// Function to validate the message when the switch is off (string)
-function validateStringMessage(message: string) {
-    const result = messageSchema.safeParse({ message: message, msgSwitch: false });
+  // Function to validate the message when the switch is off (string)
+  function validateStringMessage(message: string) {
+    const result = messageSchema.safeParse({
+      message: message,
+      msgSwitch: false,
+    });
     if (!result.success) {
-        // Handle validation error
-        setFormError(result.error.issues[0].message);
+      // Handle validation error
+      setFormError(result.error.issues[0].message);
     } else {
-        // Remove error message if validation is successful
-        setFormError("");
+      // Remove error message if validation is successful
+      setFormError("");
     }
-}
+  }
 
-function validateHexKey(key: string) {
-    const result = hexMessageSchema.safeParse({ message: key, msgSwitch: true });
+  function validateHexKey(key: string) {
+    const result = hexMessageSchema.safeParse({
+      message: key,
+      msgSwitch: true,
+    });
     if (!result.success) {
-        // Handle validation error
-        setFormError(result.error.issues[0].message);
+      // Handle validation error
+      setFormError(result.error.issues[0].message);
     } else {
-        // Remove error message if validation is successful
-        setFormError("");
-        // Remove '0x' from the beginning of the hex code
-        if (key.startsWith('0x')) {
-            setKey(key.replace('0x', ''));
-        }
+      // Remove error message if validation is successful
+      setFormError("");
+      // Remove '0x' from the beginning of the hex code
+      if (key.startsWith("0x")) {
+        setKey(key.replace("0x", ""));
+      }
     }
-}
+  }
 
-// Function to validate the key when the switch is off (string)
-function validateStringKey(key: string) {
+  // Function to validate the key when the switch is off (string)
+  function validateStringKey(key: string) {
     const result = messageSchema.safeParse({ message: key, msgSwitch: false });
     if (!result.success) {
-        // Handle validation error
-        setFormError(result.error.issues[0].message);
+      // Handle validation error
+      setFormError(result.error.issues[0].message);
     } else {
-        // Remove error message if validation is successful
-        setFormError("");
+      // Remove error message if validation is successful
+      setFormError("");
     }
-}
+  }
 
   const checkHex = (str: string): boolean => {
     if (str.startsWith("0x")) str = str.slice(2);
@@ -158,9 +167,9 @@ function validateStringKey(key: string) {
                     const newMsg = e.target.value;
                     setMessage(newMsg);
                     if (msgSwitch) {
-                        validateHexMessage(newMsg);
+                      validateHexMessage(newMsg);
                     } else {
-                        validateStringMessage(newMsg);
+                      validateStringMessage(newMsg);
                     }
                     // validateMessage({ message: newMsg, msgSwitch: msgSwitch });
                   }}
@@ -171,7 +180,11 @@ function validateStringKey(key: string) {
                     checked={msgSwitch}
                     onCheckedChange={() => {
                       setMsgSwitch(!msgSwitch);
-                      
+                      if (msgSwitch) {
+                        validateHexMessage(message);
+                      } else {
+                        validateStringMessage(message);
+                      }
                     }}
                   />
                   <label className="w-10" htmlFor="msg-switch">
@@ -191,9 +204,9 @@ function validateStringKey(key: string) {
                     const newKey = e.target.value;
                     setKey(newKey);
                     if (keySwitch) {
-                        validateHexKey(newKey);
+                      validateHexKey(newKey);
                     } else {
-                        validateStringKey(newKey);
+                      validateStringKey(newKey);
                     }
                     // validateMessage({ message: newKey, msgSwitch: keySwitch });
                   }}
@@ -204,7 +217,11 @@ function validateStringKey(key: string) {
                     checked={keySwitch}
                     onCheckedChange={() => {
                       setKeySwitch(!keySwitch);
-                     
+                      if (keySwitch) {
+                        validateHexKey(key);
+                      } else {
+                        validateStringKey(key);
+                      }
                     }}
                   />
                   <label className="w-10" htmlFor="key-switch">
