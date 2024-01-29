@@ -1,0 +1,3 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/Ansh1902396/Artela_Encryption_UI.git
