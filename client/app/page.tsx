@@ -48,37 +48,39 @@ export default function Component() {
     });
   };
   function validateHexMessage(message: string) {
-    const result = hexMessageSchema.safeParse({
-      message: message,
-      msgSwitch: true,
-    });
+    const result = hexMessageSchema.safeParse({ message: message, msgSwitch: true });
     if (!result.success) {
-      // Handle validation error
-      setFormError(result.error.issues[0].message);
+        // Handle validation error
+        if (result.error.issues[0].type === 'typeError') {
+            setFormError("Invalid hex string. Please ensure your input starts with '0x' and contains only hexadecimal characters.");
+        } else {
+            setFormError("An unknown error occurred during validation.");
+        }
     } else {
-      // Remove error message if validation is successful
-      setFormError("");
-      // Remove '0x' from the beginning of the hex code
-      if (message.startsWith("0x")) {
-        setMessage(message.replace("0x", ""));
-      }
+        // Remove error message if validation is successful
+        setFormError("");
+        // Remove '0x' from the beginning of the hex code
+        if (message.startsWith('0x')) {
+            setMessage(message.replace('0x', ''));
+        }
     }
-  }
+}
 
-  // Function to validate the message when the switch is off (string)
-  function validateStringMessage(message: string) {
-    const result = messageSchema.safeParse({
-      message: message,
-      msgSwitch: false,
-    });
+// Function to validate the message when the switch is off (string)
+function validateStringMessage(message: string) {
+    const result = messageSchema.safeParse({ message: message, msgSwitch: false });
     if (!result.success) {
-      // Handle validation error
-      setFormError(result.error.issues[0].message);
+        // Handle validation error
+        if (result.error.issues[0].type === 'typeError') {
+            setFormError("Invalid string. Please ensure your input contains only valid string characters.");
+        } else {
+            setFormError("An unknown error occurred during validation.");
+        }
     } else {
-      // Remove error message if validation is successful
-      setFormError("");
+        // Remove error message if validation is successful
+        setFormError("");
     }
-  }
+}
 
   function validateHexKey(key: string) {
     const result = hexMessageSchema.safeParse({
@@ -176,8 +178,8 @@ export default function Component() {
                   <Switch
                     id="msg-switch"
                     checked={msgSwitch}
-                    onCheckedChange={() => {
-                      setMsgSwitch(!msgSwitch);
+                    onCheckedChange={async () => {
+                     await setMsgSwitch(!msgSwitch);
                       if (msgSwitch) {
                         validateHexMessage(message);
                       } else {
@@ -213,13 +215,14 @@ export default function Component() {
                   <Switch
                     id="key-switch"
                     checked={keySwitch}
-                    onCheckedChange={() => {
-                      setKeySwitch(!keySwitch);
+                    onCheckedChange={async () => {
                       if (keySwitch) {
-                        validateHexKey(key);
+                        await validateHexKey(key);
                       } else {
-                        validateStringKey(key);
+                        await validateStringKey(key);
                       }
+                       setKeySwitch(!keySwitch);
+                      
                     }}
                   />
                   <label className="w-10" htmlFor="key-switch">
@@ -243,7 +246,7 @@ export default function Component() {
                 <Button
                   className="font-bold rounded-xl w-full"
                   type="submit"
-                  disabled={formError !== ""}
+                  disabled={!!formError}
                 >
                   Encrypt
                 </Button>
@@ -251,7 +254,7 @@ export default function Component() {
                 <Button
                   className="font-bold rounded-xl w-full"
                   type="submit"
-                  disabled={formError !== ""}
+                  disabled={!!formError}
                 >
                   Decrypt
                 </Button>
