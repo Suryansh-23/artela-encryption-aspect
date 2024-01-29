@@ -20,6 +20,7 @@ const Navbar = () => {
                     <h1>On-Chain Encryption Aspect</h1>
                 </Link>
                 <div className="flex items-center space-x-4">
+                    <w3m-button />
                     <a
                         title="Github Repository"
                         href="https://github.com/Suryansh-23/artela-encryption-aspect"

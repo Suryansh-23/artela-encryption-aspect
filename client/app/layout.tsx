@@ -1,7 +1,11 @@
 import Navbar from "@/components/navbar";
+import { config } from "@/config";
+import { Web3Modal } from "@/context";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
+import { cookieToInitialState } from "wagmi";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,6 +20,7 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const initialState = cookieToInitialState(config, headers().get("cookie"));
     return (
         <html lang="en" className="bg-black">
             <body
@@ -23,8 +28,10 @@ export default function RootLayout({
                     "w-full h-screen flex flex-row items-center justify-center",
                     inter.className
                 )}>
-                <Navbar />
-                {children}
+                <Web3Modal initialState={initialState}>
+                    <Navbar />
+                    {children}
+                </Web3Modal>
             </body>
         </html>
     );

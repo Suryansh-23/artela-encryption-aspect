@@ -6,20 +6,41 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useWriteContract } from "wagmi";
+import abi from "@/lib/abi";
 
+const aspectId = "0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0";
 export default function Component() {
     const [keySwitch, setKeySwitch] = useState<boolean>(false);
     const [msgSwitch, setMsgSwitch] = useState<boolean>(false);
 
     const [message, setMessage] = useState<string>("");
     const [key, setKey] = useState<string>("");
-    const [formError, setFormError] = useState<String>("");
+    const [formError, setFormError] = useState<String>(
+        "Key should be of length 44 characters or bytes"
+    );
+    const { data: hash, writeContract } = useWriteContract();
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const msg = formData.get("message") as string;
+        const key = formData.get("key") as string;
+
+        console.log(msg, key);
+        writeContract({
+            address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
+            abi,
+            functionName: "encrypt",
+            args: [aspectId, msg, key],
+        });
+    };
 
     const checkHex = (str: string): boolean => {
         if (str.startsWith("0x")) str = str.slice(2);
         if (str.length === 0) return true;
 
-        console.log(str);
+        // console.log(str);
 
         const hex = /^[0-9A-Fa-f]+$/g;
         return hex.test(str);
@@ -55,14 +76,17 @@ export default function Component() {
                 </CardTitle>
             </Card>
             <div className="flex flex-row space-x-8">
-                <Card className="flex flex-col items-center w-fit card justify-center mx-auto box space-y-10 pt-10">
+                <Card className="flex flex-col items-center w-[26rem] card justify-center mx-auto box space-y-10 pt-10">
                     <CardContent className="space-y-[3rem]">
-                        <div className="flex flex-col space-y-4">
+                        <form
+                            className="flex flex-col space-y-4"
+                            onSubmit={submit}>
                             {/* <Label htmlFor="name4" className="mx-2">
                                 Enter the Message
                             </Label> */}
                             <div className="flex flex-row gap-2">
                                 <Input
+                                    required
                                     name="message"
                                     value={message}
                                     placeholder={
@@ -72,10 +96,6 @@ export default function Component() {
                                     onChange={(e) => {
                                         setMessage(e.target.value);
                                         if (msgSwitch) {
-                                            console.log(
-                                                e.target.value,
-                                                checkHex(e.target.value)
-                                            );
                                             if (!checkHex(e.target.value)) {
                                                 setFormError(
                                                     "Message should be in hex format"
@@ -114,6 +134,7 @@ export default function Component() {
 
                             <div className="flex flex-row gap-2">
                                 <Input
+                                    required
                                     name="key"
                                     placeholder={
                                         keySwitch ? "0x... key" : "key"
@@ -133,6 +154,18 @@ export default function Component() {
                                                 );
                                             } else {
                                                 setFormError("");
+                                            }
+
+                                            if (key.length !== 44) {
+                                                setFormError(
+                                                    "Key should be of length 44 characters or bytes"
+                                                );
+                                            }
+                                        } else {
+                                            if (key.length !== 88) {
+                                                setFormError(
+                                                    "Key should be of length 88 hex characters or 44 bytes"
+                                                );
                                             }
                                         }
                                     }}
@@ -163,7 +196,7 @@ export default function Component() {
                             <label
                                 htmlFor="error"
                                 className={cn(
-                                    "text-red-500",
+                                    "text-red-500 text-wrap",
                                     formError === "" ? "hidden" : "",
                                     "transition-opacity duration-500"
                                 )}>
@@ -185,7 +218,7 @@ export default function Component() {
                                     Decrypt
                                 </Button>
                             </div>
-                        </div>
+                        </form>
                     </CardContent>
                 </Card>
                 <Card className="flex flex-col w-96 items-center card mx-auto box space-y-10 p-10">
