@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +28,7 @@ export default function Component() {
 
         console.log(msg, key);
         writeContract({
-            address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
+            address: "0xbdE72CF308314fF3f8410AEF582b195FD64e2221",
             abi,
             functionName: "encrypt",
             args: [aspectId, msg, key],
