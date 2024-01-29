@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,6 +23,7 @@ const hexMessageSchema = z.object({
 });
 
 export default function Component() {
+
   const [keySwitch, setKeySwitch] = useState<boolean>(false);
   const [msgSwitch, setMsgSwitch] = useState<boolean>(false);
 
@@ -154,6 +154,79 @@ export default function Component() {
           <CardContent className="space-y-[3rem]">
             <form className="flex flex-col space-y-4" onSubmit={submit}>
               {/* <Label htmlFor="name4" className="mx-2">
+=======
+    const [keySwitch, setKeySwitch] = useState<boolean>(false);
+    const [msgSwitch, setMsgSwitch] = useState<boolean>(false);
+
+    const [message, setMessage] = useState<string>("");
+    const [key, setKey] = useState<string>("");
+    const [formError, setFormError] = useState<String>(
+        "Key should be of length 44 characters or bytes"
+    );
+    const { data: hash, writeContract } = useWriteContract();
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const msg = formData.get("message") as string;
+        const key = formData.get("key") as string;
+
+        console.log(msg, key);
+        writeContract({
+            address: "0xbdE72CF308314fF3f8410AEF582b195FD64e2221",
+            abi,
+            functionName: "encrypt",
+            args: [aspectId, msg, key],
+        });
+    };
+
+    const checkHex = (str: string): boolean => {
+        if (str.startsWith("0x")) str = str.slice(2);
+        if (str.length === 0) return true;
+
+        // console.log(str);
+
+        const hex = /^[0-9A-Fa-f]+$/g;
+        return hex.test(str);
+    };
+
+    const stringToHex = (str: string): string => {
+        let hex = "";
+        for (let i = 0; i < str.length; i++) {
+            const charCode = str.charCodeAt(i);
+            const hexValue = charCode.toString(16);
+
+            // Pad with zeros to ensure two-digit representation
+            hex += hexValue.padStart(2, "0");
+        }
+        return hex;
+    };
+
+    const hexToString = (hex: string): string => {
+        let str = "";
+        for (let i = 0; i < hex.length; i += 2) {
+            const hexValue = hex.slice(i, i + 2);
+            const decimalValue = parseInt(hexValue, 16);
+            str += String.fromCharCode(decimalValue);
+        }
+        return str;
+    };
+
+    return (
+        <main className="flex flex-col items-center justify-center space-y-8">
+            <Card className="flex flex-col items-center w-fit card justify-center mx-auto box space-y-10 p-10">
+                <CardTitle className="text-3xl font-bold text-white">
+                    Aspect Demo
+                </CardTitle>
+            </Card>
+            <div className="flex flex-row space-x-8">
+                <Card className="flex flex-col items-center w-[26rem] card justify-center mx-auto box space-y-10 pt-10">
+                    <CardContent className="space-y-[3rem]">
+                        <form
+                            className="flex flex-col space-y-4"
+                            onSubmit={submit}>
+                            {/* <Label htmlFor="name4" className="mx-2">
+
                                 Enter the Message
                             </Label> */}
               <div className="flex flex-row gap-2">
