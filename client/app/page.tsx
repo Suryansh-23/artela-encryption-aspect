@@ -8,8 +8,26 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useWriteContract } from "wagmi";
 import abi from "@/lib/abi";
+import {z} from "zod";
+
+
 
 const aspectId = "0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0";
+
+
+const messageSchema = z.object({
+    message: z.string().max(44),
+    msgSwitch: z.boolean(),
+  });
+  
+  // Define the schema for the hex message
+  const hexMessageSchema = z.object({
+    message: z.string().regex(/^0x[a-fA-F0-9]{1,88}$/),
+    msgSwitch: z.boolean(),
+  });
+  
+
+
 export default function Component() {
     const [keySwitch, setKeySwitch] = useState<boolean>(false);
     const [msgSwitch, setMsgSwitch] = useState<boolean>(false);
@@ -26,7 +44,6 @@ export default function Component() {
         const formData = new FormData(e.target as HTMLFormElement);
         const msg = formData.get("message") as string;
         const key = formData.get("key") as string;
-
         console.log(msg, key);
         writeContract({
             address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
@@ -35,6 +52,29 @@ export default function Component() {
             args: [aspectId, msg, key],
         });
     };
+
+
+    function validateMessage(data: any) {
+        let result;
+        if (data.msgSwitch) {
+          // If the switch is on, validate as a hex message
+           result = hexMessageSchema.safeParse(data);
+          if (!result.success) {
+            // Handle validation error
+            setFormError(result.error.issues[0].message);
+          }
+        } else {
+          // If the switch is off, validate as a normal message
+             result = messageSchema.safeParse(data);
+          if (!result.success) {
+            // Handle validation error
+            setFormError(result.error.issues[0].message);
+          }
+        }
+
+        
+      }
+
 
     const checkHex = (str: string): boolean => {
         if (str.startsWith("0x")) str = str.slice(2);
@@ -94,17 +134,11 @@ export default function Component() {
                                     }
                                     className="rounded-xl w-64"
                                     onChange={(e) => {
-                                        setMessage(e.target.value);
-                                        if (msgSwitch) {
-                                            if (!checkHex(e.target.value)) {
-                                                setFormError(
-                                                    "Message should be in hex format"
-                                                );
-                                            } else {
-                                                setFormError("");
-                                            }
-                                        }
+                                        const newMsg = e.target.value;
+                                        setMessage(newMsg);
+                                        validateMessage({ message: newMsg, msgSwitch: msgSwitch });
                                     }}
+                                    
                                 />
                                 <div className="flex items-center space-x-2">
                                     <Switch
@@ -142,32 +176,9 @@ export default function Component() {
                                     className="rounded-xl w-64"
                                     value={key}
                                     onChange={(e) => {
-                                        setKey(e.target.value);
-                                        if (keySwitch) {
-                                            console.log(
-                                                e.target.value,
-                                                checkHex(e.target.value)
-                                            );
-                                            if (!checkHex(e.target.value)) {
-                                                setFormError(
-                                                    "Key should be in hex format"
-                                                );
-                                            } else {
-                                                setFormError("");
-                                            }
-
-                                            if (key.length !== 44) {
-                                                setFormError(
-                                                    "Key should be of length 44 characters or bytes"
-                                                );
-                                            }
-                                        } else {
-                                            if (key.length !== 88) {
-                                                setFormError(
-                                                    "Key should be of length 88 hex characters or 44 bytes"
-                                                );
-                                            }
-                                        }
+                                        const newKey = e.target.value;
+                                        setKey(newKey);
+                                        validateMessage({ message: newKey, msgSwitch: keySwitch });
                                     }}
                                 />
                                 <div className="flex items-center space-x-2">
