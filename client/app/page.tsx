@@ -47,6 +47,7 @@ const hexToString = (hex: string): string => {
     return str;
 };
 
+
 const stringToHex = (str: string): string => {
     let hex = "";
     for (let i = 0; i < str.length; i++) {
@@ -292,6 +293,7 @@ export default function Component() {
                                 )}>
                                 {formError}
                             </label>
+
 
                             <div className="flex flex-row justify-center items-center space-x-4 pt-6">
                                 <Button
