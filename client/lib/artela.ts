@@ -1,8 +1,8 @@
 import { defineChain } from "viem";
 
 export const artelaTestnet = defineChain({
-    id: 1,
-    chainId: 11822,
+    id: 11822,
+    chainId: 1,
     name: "Artela Testnet",
     network: "artela-testnet",
     nativeCurrency: {
@@ -30,4 +30,5 @@ export const artelaTestnet = defineChain({
             url: "https://betanet-scan.artela.network/",
         },
     },
+    testnet: true,
 });

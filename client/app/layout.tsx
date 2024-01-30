@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/toaster";
 import { config } from "@/config";
 import { Web3Modal } from "@/context";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     const initialState = cookieToInitialState(config, headers().get("cookie"));
+
     return (
         <html lang="en" className="bg-black">
             <body
@@ -30,6 +32,7 @@ export default function RootLayout({
                 )}>
                 <Web3Modal initialState={initialState}>
                     <Navbar />
+                    <Toaster />
                     {children}
                 </Web3Modal>
             </body>

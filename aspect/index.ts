@@ -13,7 +13,10 @@ import { ChaCha20 } from "./ChaCha20";
 
 class EncryptionAspect implements IPreContractCallJP {
     encryptMethodSig: string = "451c067f";
+    encryptOffChainMethodSig: string = "fafb832d";
+
     decryptMethodSig: string = "3f53ef0f";
+    decryptOffChainMethodSig: string = "09183061";
 
     isOwner(_sender: Uint8Array): boolean {
         return true;
@@ -38,14 +41,20 @@ class EncryptionAspect implements IPreContractCallJP {
         // sys.log("key: " + uint8ArrayToHex(key));
         // sys.log("nonce: " + uint8ArrayToHex(nonce));
 
-        if (parentCallMethod === this.encryptMethodSig) {
+        if (
+            parentCallMethod === this.encryptMethodSig ||
+            parentCallMethod === this.encryptOffChainMethodSig
+        ) {
             const encryptor = new ChaCha20(key, nonce, 0);
             const encrypted = uint8ArrayToHex(encryptor.encrypt(message));
 
             sys.aspect.transientStorage
                 .get<string>("ToContract")
                 .set<string>(encrypted);
-        } else if (parentCallMethod === this.decryptMethodSig) {
+        } else if (
+            parentCallMethod === this.decryptMethodSig ||
+            parentCallMethod === this.decryptOffChainMethodSig
+        ) {
             const decryptor = new ChaCha20(key, nonce, 0);
             const decrypted = uint8ArrayToHex(decryptor.decrypt(message));
 
