@@ -133,7 +133,7 @@ export default function Component() {
             // await delay(4000);
             console.log(`${btnChoice}ion txn hash: `, hash);
 
-            const txnRec = await publicClient?.getTransactionReceipt({
+            const txnRec = await publicClient?.waitForTransactionReceipt({
                 hash: hash,
             });
 
