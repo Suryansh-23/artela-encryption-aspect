@@ -70,9 +70,7 @@ export default function Component() {
     const [key, setKey] = useState<string>(
         "e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7"
     );
-    const [formError, setFormError] = useState<String>(
-        "Key should be of length 44 characters or bytes"
-    );
+    const [formError, setFormError] = useState<String>("");
     const [btnChoice, setBtnChoice] = useState<string>("");
     const [result, setResult] = useState<{
         hex: string;
@@ -124,7 +122,7 @@ export default function Component() {
                 return;
             }
 
-            await delay(5000);
+            // await delay(4000);
             console.log(`${btnChoice}ion txn hash: `, hash);
 
             const txnRec = await publicClient?.getTransactionReceipt({
@@ -178,7 +176,9 @@ export default function Component() {
 
         if (!result.success) {
             // Handle validation error
-            setFormError("Key should be of length 88 characters or bytes");
+            setFormError(
+                "Key should be a valid hex string of length 88 characters or bytes"
+            );
         }
     }
 
@@ -191,13 +191,14 @@ export default function Component() {
 
         if (!result.success) {
             // Handle validation error
-            setFormError("Key should be of length 44 characters or bytes");
+            setFormError(
+                "Key should be a valid string of length 88 characters or 44 bytes"
+            );
         }
     }
 
     useEffect(() => {
         setFormError("");
-
         if (keySwitch) {
             validateHexKey(key);
         } else {
@@ -206,6 +207,8 @@ export default function Component() {
 
         if (msgSwitch) {
             validateHexMessage(message);
+        } else if (message === "") {
+            setFormError("Message cannot be empty");
         }
     }, [keySwitch, msgSwitch, message, key]);
 
@@ -345,7 +348,7 @@ export default function Component() {
                         </div>
                         <div className="flex flex-row gap-x-4 items-center">
                             <label htmlFor="stringResult" className="w-14">
-                                Strings
+                                String
                             </label>
                             <Input
                                 name="stringResult"

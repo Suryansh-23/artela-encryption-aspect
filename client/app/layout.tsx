@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { cookieToInitialState } from "wagmi";
 import "./globals.css";
 
@@ -35,6 +36,30 @@ export default function RootLayout({
                     <Toaster />
                     {children}
                 </Web3Modal>
+                <div
+                    className={cn(
+                        "fixed bottom-0 text-center font-medium p-6 text-slate-100",
+                        inter.className
+                    )}>
+                    <p>
+                        Made with 💖 in 🇮🇳 by{" "}
+                        <Link
+                            className="underline underline-offset-2"
+                            href="https://github.com/Suryansh-23/"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Suryansh
+                        </Link>{" "}
+                        &{" "}
+                        <Link
+                            className="underline underline-offset-2"
+                            href="https://github.com/Ansh1902396/"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Rudransh
+                        </Link>
+                    </p>
+                </div>
             </body>
         </html>
     );
