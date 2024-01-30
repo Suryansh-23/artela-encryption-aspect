@@ -1,4 +1,5 @@
 
+
 #  On-Chain Data Encryption
 
   
@@ -207,7 +208,7 @@ The "On Chain Data Encryption" project provides significant value to the Artela 
   
 
 ###  Contract usage 
-An Example Implementation of the aspect in a smart contract which encrypts the data of the users 
+below is an example, when a healthcare provider needs to access a patient’s record, they can do so by decrypting the data on-chain, ensuring the confidentiality and security of the patient’s information
 ```solidity
 
 // SPDX-License-Identifier: GPL-3.0
@@ -246,19 +247,67 @@ contract HealthDataStorage {
     }
 
     // Function to encrypt and store health data
-    function encryptAndStoreData(string memory aspectId, string memory message, string memory key) external onlyOwner {
+    function encryptAndStoreData(string memory message, string memory key) external onlyOwner {
         string memory encryptedMessage = encryptionContract.encrypt(address(this), message, key);
         encryptedHealthData[msg.sender] = encryptedMessage;
         emit HealthDataUpdated(msg.sender, encryptedMessage);
     }
 
     // Function to get the decrypted health data
-    function getDecryptedData(string memory aspectId, string memory key) external view returns (string memory) {
+    function getDecryptedData(string memory key) external view returns (string memory) {
         string memory encryptedData = encryptedHealthData[msg.sender];
         return encryptionContract.decrypt(address(this), encryptedData, key);
     }
 }
 
+```
+
+
+
+# How To setup the project
+Clone the repository from https://github.com/Suryansh-23/artela-encryption-aspect.git
+
+```bash
+$ git clone https://github.com/Suryansh-23/artela-encryption-aspect.git
+```
+
+First create an EoA
+
+```bash
+$ npm run account:create
+address:  0x6B70B03B608a19Bf1817848A4C8FFF844f0Be0fB
+```
+
+## Compile and deploy Contract
+
+If you are binding the Aspect to an existing contract, you can skip this step.
+
+```bash
+$ npm run contract:build
+
+$ npm run contract:deploy
+
+$env:CAddr = ""
+$env:CAddr = "0xbdE72CF308314fF3f8410AEF582b195FD64e2221"
+
+$env:AAddr = ""
+$env:AAddr = "0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0"//Ge
+
+npm run contract:build
+
+npm run contract:deploy --  --abi ./build/contract/Encryption.abi --bytecode ./build/contract/Encryption.bin
+
+npm run aspect:build
+
+npm run aspect:deploy -- --wasm ./build/release.wasm --joinPoints PreContractCall
+
+npm run contract:bind -- --contract $env:CAddr --abi ./build/contract/Encryption.abi --aspectId $env:AAddr
+
+npm run contract:call -- --contract $env:CAddr --abi ./build/contract/Encryption.abi --method encrypt --args $env:AAddr --args 48656c6c6f2c20576f726c6421 --args e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7
+
+npm run contract:unbind -- --contract $env:CAddr --aspectId $env:AAddr --gas 200000	
+
+npm run bound:aspect  -- --contract $env:CAddr --gas 200000
 ```
 
   
