@@ -61,12 +61,10 @@ export default function Component() {
     const { setThemeMode } = useWeb3ModalTheme();
     setThemeMode("dark");
 
-    const [keySwitch, setKeySwitch] = useState<boolean>(false);
+    const [keySwitch, setKeySwitch] = useState<boolean>(true);
     const [msgSwitch, setMsgSwitch] = useState<boolean>(false);
 
-    const [message, setMessage] = useState<string>(
-        "48656c6c6f2c20576f726c6421"
-    );
+    const [message, setMessage] = useState<string>("Hello, World!");
     const [key, setKey] = useState<string>(
         "e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7"
     );
