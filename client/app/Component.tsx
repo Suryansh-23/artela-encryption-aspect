@@ -5,57 +5,20 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
-import abi from "@/lib/abi";
 import { artelaTestnet } from "@/lib/artela";
 import { cn } from "@/lib/utils";
 import { useWeb3ModalTheme } from "@web3modal/wagmi/react";
 import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
-import { WriteContractParameters, decodeEventLog } from "viem";
+import { decodeEventLog } from "viem";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { z } from "zod";
-
-const aspectId = "0x2b49e72D1aBC5B0923C0337973E4AE2aAb554E18";
-const contractAddress = "0x819822f9CcD6eD606cF465710C576E7E2e9EDd4B";
-
-// Define the schema for the hex message
-const hexMessageSchema = z.object({
-    message: z.string().regex(/[a-fA-F0-9]+/),
-    msgSwitch: z.boolean(),
-});
-
-// Define the schema for the string message
-const keySchema = z.object({
-    key: z.string().length(44),
-    keySwitch: z.boolean(),
-});
-
-// Define the schema for the hex message
-const hexKeySchema = z.object({
-    key: z
-        .string()
-        .regex(/[a-fA-F0-9]+/)
-        .length(88),
-    keySwitch: z.boolean(),
-});
-
-const hexToString = (hex: string): string => {
-    let str = "";
-    for (let i = 0; i < hex.length; i += 2) {
-        str += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16));
-    }
-    return str;
-};
-
-const stringToHex = (str: string): string => {
-    let hex = "";
-    for (let i = 0; i < str.length; i++) {
-        hex += str.charCodeAt(i).toString(16);
-    }
-    return hex;
-};
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import {
+    stringToHex,
+    hexToString,
+    hexMessageSchema,
+    hexKeySchema,
+    keySchema,
+} from "./page";
 
 export default function Component() {
     const { setThemeMode } = useWeb3ModalTheme();
@@ -111,17 +74,14 @@ export default function Component() {
             if (!walletClient) {
                 throw new Error("Wallet client not found");
             }
-            if (!walletClient.data) {
-                throw new Error("Wallet client data not found");
-            }
 
-            const hash = await walletClient.data.writeContract({
-                abi: abi,
-                account: address || "",
-                address: contractAddress,
-                functionName: `${btnChoice}OffChain`,
-                args: [aspectId, msg, key],
-            } as unknown as WriteContractParameters);
+            const hash = await walletClient?.data?.writeContract({
+                // abi: abi,
+                // account: address || "",
+                // address: contractAddress,
+                // functionName: `${btnChoice}OffChain`,
+                // args: [aspectId, msg, key],
+            });
 
             if (!hash) {
                 toast({
