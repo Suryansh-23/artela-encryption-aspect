@@ -265,67 +265,75 @@ contract HealthDataStorage {
 
 
 # How To setup the project
+
+## 1. Project Setup
 Clone the repository from https://github.com/Suryansh-23/artela-encryption-aspect.git
 
 ```bash
 $ git clone https://github.com/Suryansh-23/artela-encryption-aspect.git
 ```
 
-First create an EoA
+## 2. First create an EoA
 
 ```bash
 $ npm run account:create
 address:  0x6B70B03B608a19Bf1817848A4C8FFF844f0Be0fB
 ```
+Store the private key of the EOA in `build/privateKey.txt`.
 
-## Compile and deploy Contract
+## 3. Initializing Environment Variables
+```bash
+$ CAddr=""
+$ CAddr="0xbdE72CF308314fF3f8410AEF582b195FD64e2221"  # use this if you don't want to deploy the contract yourself
 
-If you are binding the Aspect to an existing contract, you can skip this step.
+$ AAddr=""
+$ AAddr="0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0"  # use this if you don't want to deploy the aspect yourself
+```
+
+## 4. Compile & Deploy the Contract
+If you are going to use the deployed contract, you can skip this step.
 
 ```bash
 $ npm run contract:build
 
-$ npm run contract:deploy
+$ npm run contract:deploy --  --abi ./build/contract/Encryption.abi --bytecode ./build/contract/Encryption.bin
 
-$env:CAddr = ""
-$env:CAddr = "0xbdE72CF308314fF3f8410AEF582b195FD64e2221"
-
-$env:AAddr = ""
-$env:AAddr = "0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0"//Ge
-
-npm run contract:build
-
-npm run contract:deploy --  --abi ./build/contract/Encryption.abi --bytecode ./build/contract/Encryption.bin
-
-npm run aspect:build
-
-npm run aspect:deploy -- --wasm ./build/release.wasm --joinPoints PreContractCall
-
-npm run contract:bind -- --contract $env:CAddr --abi ./build/contract/Encryption.abi --aspectId $env:AAddr
-
-npm run contract:call -- --contract $env:CAddr --abi ./build/contract/Encryption.abi --method encrypt --args $env:AAddr --args 48656c6c6f2c20576f726c6421 --args e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7
-
-npm run contract:unbind -- --contract $env:CAddr --aspectId $env:AAddr --gas 200000	
-
-npm run bound:aspect  -- --contract $env:CAddr --gas 200000
+$ CAddr="<Contract Address From Deploy>"
 ```
 
-  
+## 5. Compile, Deploy & Bind the Aspect
+If you want to use the deployed aspect, you can skip this step.
+
+```bash
+$ npm run aspect:build
+
+$ npm run aspect:deploy -- --wasm ./build/release.wasm --joinPoints PreContractCall
+
+$ AAddr="<Aspect Address from Deploy>"
+
+$ npm run contract:bind -- --contract $CAddr --abi ./build/contract/Encryption.abi --aspectId $AAddr
+```
+
+To verify the success of the bind process of the aspect on the contract run the following command.
+
+```bash
+$ npm run bound:aspect  -- --contract $CAddr --gas 200000
+```
+
+## 6. Calling the Contract & Other Info
+The arguments for the contract are of the form - 
+| AspectId (AAddr) | Message (hex of any length without 0x prefix) | Key (hex of 44 bytes or 88 chars without 0x prefix) |
+|--------------|:-----:|-----------:|
+| `0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0` | `48656c6c6f2c20576f726c6421` | `e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7` |
+
+```bash
+$ npm run contract:call -- --contract $CAddr --abi ./build/contract/Encryption.abi --method encrypt --args $AAddr --args 48656c6c6f2c20576f726c6421 --args e2796a262d7726eaab439be0ce55209d92b9c3b49dc5337e0320bd8ee43f86aa79206238b9c815543eda8cb7
+```
+
+
 
 #  Folders 
 
-  
+- Folder [aspect](aspect/index.ts) implements the On-Chain Encryption Aspect;
 
-- Folder [aspect](https://github.com/QiyuanMa/session-key-aspect-example/blob/main/aspect/README.md) implements the on Chain Encryption Aspect;
-
-- Folder [client](https://github.com/QiyuanMa/session-key-aspect-example/blob/main/js_client/session_key_aspect_client/README.md) implements the session key Aspect javascript client.
-
-  
-
-###  Integration
-
-  
-
-- Bind session key Aspect to you contract by this [guide](https://github.com/QiyuanMa/session-key-aspect-example/blob/main/aspect/README.md)
-
-- Integrate js client to you font-end dApp by this [guide](https://github.com/QiyuanMa/session-key-aspect-example/blob/main/js_client/session_key_aspect_client/README.md)
+- Folder [client](client/) implements the Aspect Demo using a Next.js client.
