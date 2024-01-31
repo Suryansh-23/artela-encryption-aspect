@@ -142,7 +142,7 @@ For example, when a healthcare provider needs to access a patient's record, they
 
   
 
-###  Implementation
+##  Implementation
 
   
 
@@ -150,23 +150,13 @@ Session-key Aspect project contains three components:
 
   
 
-#  Client Implementation
+###  Client Implementation
 
-  
-
--  **Client**, `client`, a client for the dApp front end to use session key.
+-  **Client**, `client`, a client for the dApp front end that uses next along with wagmi & wallet connect integration.
 
 -  **Aspect**, wasm bytecode deployed on Artela
 
--  **Explorer,** extend Artela explorer to show Aspect info
-
-  
-
-![截屏2023-11-09 16.16.17.png](https://github.com/QiyuanMa/session-key-aspect-example/blob/main/img/2023-11-09-16.16.17.png)
-
-  
-
-####  Why we chose _ChaCha20-Poly1305_?
+###  Why we chose _ChaCha20-Poly1305_?
 
   
 
@@ -186,7 +176,7 @@ The decision to use the _ChaCha20_ encryption algorithm for the "On-Chain Data E
 
   
 
-##  Value to the Artela Ecosystem
+###  Value to the Artela Ecosystem
 
   
 
@@ -204,10 +194,10 @@ The "On Chain Data Encryption" project provides significant value to the Artela 
 
   
 
-##  How to Use
+###  How to Use
   
 
-###  Contract usage 
+####  Contract usage 
 below is an example, when a healthcare provider needs to access a patient’s record, they can do so by decrypting the data on-chain, ensuring the confidentiality and security of the patient’s information
 ```solidity
 
@@ -264,16 +254,16 @@ contract HealthDataStorage {
 
 
 
-# How To setup the project
+## How To setup the project
 
-## 1. Project Setup
+### 1. Project Setup
 Clone the repository from https://github.com/Suryansh-23/artela-encryption-aspect.git
 
 ```bash
 $ git clone https://github.com/Suryansh-23/artela-encryption-aspect.git
 ```
 
-## 2. First create an EoA
+### 2. First create an EoA
 
 ```bash
 $ npm run account:create
@@ -281,7 +271,7 @@ address:  0x6B70B03B608a19Bf1817848A4C8FFF844f0Be0fB
 ```
 Store the private key of the EOA in `build/privateKey.txt`.
 
-## 3. Initializing Environment Variables
+### 3. Initializing Environment Variables
 ```bash
 $ CAddr=""
 $ CAddr="0xbdE72CF308314fF3f8410AEF582b195FD64e2221"  # use this if you don't want to deploy the contract yourself
@@ -290,7 +280,7 @@ $ AAddr=""
 $ AAddr="0x150A22c581a2B4BeDfEfEEC25C43519e593EF2E0"  # use this if you don't want to deploy the aspect yourself
 ```
 
-## 4. Compile & Deploy the Contract
+### 4. Compile & Deploy the Contract
 If you are going to use the deployed contract, you can skip this step.
 
 ```bash
@@ -301,7 +291,7 @@ $ npm run contract:deploy --  --abi ./build/contract/Encryption.abi --bytecode .
 $ CAddr="<Contract Address From Deploy>"
 ```
 
-## 5. Compile, Deploy & Bind the Aspect
+### 5. Compile, Deploy & Bind the Aspect
 If you want to use the deployed aspect, you can skip this step.
 
 ```bash
@@ -320,7 +310,7 @@ To verify the success of the bind process of the aspect on the contract run the 
 $ npm run bound:aspect  -- --contract $CAddr --gas 200000
 ```
 
-## 6. Calling the Contract & Other Info
+### 6. Calling the Contract & Other Info
 The arguments for the contract are of the form - 
 | AspectId (AAddr) | Message (hex of any length without 0x prefix) | Key (hex of 44 bytes or 88 chars without 0x prefix) |
 |--------------|:-----:|-----------:|
@@ -332,7 +322,7 @@ $ npm run contract:call -- --contract $CAddr --abi ./build/contract/Encryption.a
 
 
 
-#  Folders 
+## Folders 
 
 - Folder [aspect](aspect/index.ts) implements the On-Chain Encryption Aspect;
 
